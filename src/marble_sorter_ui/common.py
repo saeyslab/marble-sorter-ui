@@ -1,6 +1,8 @@
 import serial
 import yaml
 import time
+import pandas
+from typing import List
 
 
 def get_config(path):
@@ -32,6 +34,7 @@ def get_RGB(ser):
 
 
 def eject(ser):
+    time.sleep(.5)
     ser.write(str.encode('e'))
 
 
@@ -39,7 +42,7 @@ def select_bucket(ser, bucket=1):
     ser.write(str.encode(str(bucket)))
 
 
-def read_marble(ser):
+def read_marble(ser, eject=True):
 
     # clear in/out buffers
     ser.flushInput()
@@ -48,8 +51,10 @@ def read_marble(ser):
     load(ser)
     time.sleep(.5)
     rgb = get_RGB(ser)
-    time.sleep(.5)
-    eject(ser)
+
+    if eject:
+        time.sleep(.5)
+        eject(ser)
 
     return rgb
 
@@ -59,3 +64,18 @@ def empty(rgb):
         if 78 <= int(rgb[1]) <= 80:
             if 65 <= int(rgb[2]) <=67:
                 return True
+
+
+def marbles_to_df(marbles: List) -> pandas.DataFrame:
+    """Converts list of marbles to dataframe of marbles"""
+
+    marbles_df = pandas.DataFrame(columns=['color','R','G','B'])
+    for marble in marbles:
+        color = marble.get_color()
+        R = marble.get_red()
+        G = marble.get_green()
+        B = marble.get_blue()
+        df = pandas.DataFrame([{'color' : color, 'R' : R, 'G' : G, 'B' : B}])
+        marbles_df = pandas.concat([marbles_df, df], axis=0, ignore_index=True)
+
+    return marbles_df
