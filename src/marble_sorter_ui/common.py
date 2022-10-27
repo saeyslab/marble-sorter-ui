@@ -26,7 +26,7 @@ def get_RGB(ser):
         rgb_raw = rgb_raw.replace('b\'','')
         rgb_raw = rgb_raw.replace('\\r\\n\'','')
         # Conversion to list with R,G,B values
-        RGB = rgb_raw.split(',')
+        RGB = [int(i) for i in rgb_raw.split(',')]
 
     return RGB
 
