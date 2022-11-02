@@ -2,7 +2,25 @@ import serial
 import yaml
 import time
 import pandas
+import numpy
 from typing import List
+
+bucket_map = {
+    "blauw": 0,
+    "rood": 2,
+    "groen": 5,
+    "onduidelijk": 8
+}
+
+default_mean_RGB_df = pandas.DataFrame(
+    [
+        {'R': 118.2, 'G': 67., 'B': 59.},
+        {'R': 87.6, 'G': 85, 'B': 66.},
+        {'R': 76.5, 'G': 83.75, 'B': 80.75},
+        {'R' : 93., 'G' : 79., 'B' : 66.25}
+    ],
+    index=['rood', 'groen', 'blauw', 'onduidelijk']
+)
 
 
 def get_config(path):
@@ -28,9 +46,12 @@ def get_RGB(ser):
         rgb_raw = rgb_raw.replace('b\'','')
         rgb_raw = rgb_raw.replace('\\r\\n\'','')
         # Conversion to list with R,G,B values
-        RGB = [int(i) for i in rgb_raw.split(',')]
+        try:
+            RGB = [float(i) for i in rgb_raw.split(',')]
+        except ValueError:
+            return None
 
-    return RGB
+    return numpy.asarray(RGB)
 
 
 def eject(ser):
@@ -42,7 +63,7 @@ def select_bucket(ser, bucket=1):
     ser.write(str.encode(str(bucket)))
 
 
-def read_marble(ser, eject=True):
+def read_marble(ser, do_eject=True):
 
     # clear in/out buffers
     ser.flushInput()
@@ -52,7 +73,7 @@ def read_marble(ser, eject=True):
     time.sleep(.5)
     rgb = get_RGB(ser)
 
-    if eject:
+    if do_eject and (rgb is not None):
         time.sleep(.5)
         eject(ser)
 
@@ -60,9 +81,9 @@ def read_marble(ser, eject=True):
 
 
 def empty(rgb):
-    if 92 <= int(rgb[0]) <= 95:
-        if 78 <= int(rgb[1]) <= 80:
-            if 65 <= int(rgb[2]) <=67:
+    if 92 <= rgb[0] <= 95:
+        if 78 <= rgb[1] <= 80:
+            if 65 <= rgb[2] <=67:
                 return True
 
 

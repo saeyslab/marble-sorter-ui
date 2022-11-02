@@ -20,7 +20,10 @@ def train_one() -> None:
 
     # Read rgb value from marble
     rgb = read_marble(ser)
-    streamlit.write(rgb)
+
+    if rgb is None:
+        return
+
     streamlit.session_state.marbles.append(Marble(streamlit.session_state.input, *rgb))
 
     # Updates center of color in training state
