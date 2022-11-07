@@ -10,7 +10,8 @@ from marble_sorter_ui.marble import Marble
 maps = [
     LinearSegmentedColormap.from_list("red", [(0.3,0.3,0.3,1), (1.0,0,0,1)]),
     LinearSegmentedColormap.from_list("green", [(0.3,0.3,0.3,1), (0,1.0,0,1)]),
-    LinearSegmentedColormap.from_list("blue", [(0.3,0.3,0.3,1), (0,0,1.0,1)])
+    LinearSegmentedColormap.from_list("blue", [(0.3,0.3,0.3,1), (0,0,1.0,1)]),
+    LinearSegmentedColormap.from_list("empty", [(0.3,0.3,0.3,1), (0,0,1.0,1)]),
 ]
 w = 30
 

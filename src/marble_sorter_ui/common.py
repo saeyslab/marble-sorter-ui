@@ -6,10 +6,10 @@ import numpy
 from typing import List
 
 bucket_map = {
-    "blauw": 0,
+    "blauw": 1,
     "rood": 2,
     "groen": 5,
-    "onduidelijk": 8
+    "leeg": -1
 }
 
 default_mean_RGB_df = pandas.DataFrame(
@@ -19,7 +19,7 @@ default_mean_RGB_df = pandas.DataFrame(
         {'R': 76.5, 'G': 83.75, 'B': 80.75},
         {'R' : 93., 'G' : 79., 'B' : 66.25}
     ],
-    index=['rood', 'groen', 'blauw', 'onduidelijk']
+    index=['rood', 'groen', 'blauw', 'leeg']
 )
 
 
@@ -78,13 +78,6 @@ def read_marble(ser, do_eject=True):
         eject(ser)
 
     return rgb
-
-
-def empty(rgb):
-    if 92 <= rgb[0] <= 95:
-        if 78 <= rgb[1] <= 80:
-            if 65 <= rgb[2] <=67:
-                return True
 
 
 def marbles_to_df(marbles: List) -> pandas.DataFrame:
