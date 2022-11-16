@@ -5,6 +5,12 @@ import pandas
 import numpy
 from typing import List
 
+colors = {
+    "blauw": "#456990",
+    "rood": "#EC5B60",
+    "groen": "#41B4A1"
+}
+
 bucket_map = {
     "blauw": 1,
     "rood": 2,
