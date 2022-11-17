@@ -1,1 +1,1 @@
-serial_port: "/dev/ttyUSB1"
+serial_port: "/dev/ttyUSB0"

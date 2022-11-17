@@ -2,8 +2,8 @@ import streamlit
 from marble_sorter_ui.common import *
 import numpy
 from scipy.spatial.distance import cosine
-import matplotlib.pyplot as plt
 import seaborn
+import matplotlib.pyplot as plt
 
 
 def continue_sort():
@@ -52,14 +52,21 @@ if "sort" not in streamlit.session_state:
     streamlit.session_state.sort = False
 
 # Page layout
-streamlit.title("Sorteren")
+streamlit.title("Tubes")
 
-col1, col2 = streamlit.columns(2)
-with col1:
+with streamlit.sidebar:
     streamlit.button(label="Start new tube", on_click=start_sort)
     streamlit.button(label="Continue tube", on_click=continue_sort)
-with col2:
-    streamlit.button(label="Stop", on_click=stop_sort)
+    streamlit.button(label="Stop sorting", on_click=stop_sort)
+    streamlit.button(label="Clear tubes", on_click=clear_tubes)
+
+    # col1, col2 = streamlit.columns(2)
+    # with col1:
+    #     streamlit.button(label="Start new tube", on_click=start_sort)
+    #     streamlit.button(label="Continue tube", on_click=continue_sort)
+    # with col2:
+    #     streamlit.button(label="Stop sorting", on_click=stop_sort)
+    #     streamlit.button(label="Clear tubes", on_click=clear_tubes)
 
 if len(streamlit.session_state.tubes) > 0:
 
@@ -73,25 +80,30 @@ if len(streamlit.session_state.tubes) > 0:
         pandas.CategoricalDtype(categories=["rood", "groen", "blauw"], ordered=True))
 
     if df.shape[0] > 0:
-        grid = seaborn.FacetGrid(data=df, col="Tube")
-        grid.map_dataframe(seaborn.countplot, x="Color", palette=["red", "green", "blue"])
+        grid = seaborn.FacetGrid(data=df, row="Tube", aspect=2, sharex=False)
+        grid.map_dataframe(seaborn.countplot, x="Color", palette=colors.values())
         streamlit.pyplot(grid.fig)
+
+        # seaborn.countplot(data=df, x="Tube", hue="Color", palette=colors.values())
+        # streamlit.pyplot(plt.gcf())
 
 # Sort loop
 if streamlit.session_state.sort:
     rgb = read_marble(ser, do_eject=False)
 
+    streamlit.sidebar.text(str(rgb))
+
     if rgb is not None:
         bucket, color = sort(rgb)
+        streamlit.sidebar.text(color)
 
         if bucket < 0:
             stop_sort()
         else:
+            streamlit.sidebar.text(len(streamlit.session_state.tubes))
             streamlit.session_state.tubes[-1].append(color)
             select_bucket(ser, bucket=bucket)
             eject(ser)
             streamlit.experimental_rerun()
     else:
         streamlit.experimental_rerun()
-
-streamlit.button(label="Clear tubes", on_click=clear_tubes())

@@ -4,12 +4,16 @@ import time
 import pandas
 import numpy
 from typing import List
+import matplotlib.colors
 
 colors = {
-    "blauw": "#456990",
     "rood": "#EC5B60",
-    "groen": "#41B4A1"
+    "groen": "#41B4A1",
+    "blauw": "#456990"
 }
+custom_cmap = matplotlib.colors.ListedColormap(
+    colors=colors.values(), N=len(colors)
+)
 
 bucket_map = {
     "blauw": 1,
