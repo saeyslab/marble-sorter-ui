@@ -39,7 +39,7 @@ def get_config(path):
 
 
 def get_connection(serial_port):
-    return serial.Serial(serial_port, 9600, timeout=1)
+    return serial.Serial(serial_port, 9600)
 
 
 def load(ser):

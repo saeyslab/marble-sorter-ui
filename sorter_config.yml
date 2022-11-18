@@ -1,2 +1,2 @@
-serial_port: "/dev/ttyUSB0"
+serial_port: "COM5"
 per_tube: 15

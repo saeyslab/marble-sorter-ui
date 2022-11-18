@@ -46,6 +46,7 @@ config = get_config("sorter_config.yml")
 # Setup serial connection to sorter
 if "ser" not in streamlit.session_state:
     ser = get_connection(config["serial_port"])
+    streamlit.session_state.ser = ser
 else:
     ser = streamlit.session_state.ser
 
@@ -83,6 +84,7 @@ if len(streamlit.session_state.tubes) > 0:
     if df.shape[0] > 0:
         grid = seaborn.FacetGrid(data=df, row="Tube", aspect=1.7, sharex=False)
         grid.map_dataframe(seaborn.countplot, x="Color", palette=colors.values())
+        grid.set_xlabels("")
         for ax in grid.axes.ravel():
             ax.set_ylim(0, config["per_tube"])
         streamlit.pyplot(grid.fig)
