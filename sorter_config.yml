@@ -1,2 +1,3 @@
 serial_port: "COM5"
 per_tube: 15
+empty_tries: 3

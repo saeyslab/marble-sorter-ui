@@ -40,6 +40,8 @@ if ("marbles" not in streamlit.session_state) and ("centers" not in streamlit.se
     streamlit.session_state.centers = default_mean_RGB_df
 if "tubes" not in streamlit.session_state:
     clear_tubes()
+if "empty_tries" not in streamlit.session_state:
+    streamlit.session_state.empty_tries = 0
 
 config = get_config("sorter_config.yml")
 
@@ -103,8 +105,12 @@ if streamlit.session_state.sort:
         streamlit.sidebar.text(color)
 
         if bucket < 0:
-            stop_sort()
+            streamlit.session_state.empty_tries += 1
+
+            if streamlit.session_state.empty_tries >= config["empty_tries"]:
+                stop_sort()
         else:
+            streamlit.session_state.empty_tries = 0
             streamlit.sidebar.text(len(streamlit.session_state.tubes))
             streamlit.session_state.tubes[-1].append(color)
             select_bucket(ser, bucket=bucket)

@@ -80,7 +80,7 @@ def read_marble(ser, do_eject=True):
     ser.flushOutput()
 
     load(ser)
-    time.sleep(.5)
+    time.sleep(1)
     rgb = get_RGB(ser)
 
     if do_eject and (rgb is not None):
