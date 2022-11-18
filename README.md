@@ -8,6 +8,7 @@ Streamlit app providing an interactive interface to the marble sorter.
 git clone git@github.com:saeyslab/marble-sorter-ui.git
 cd marble-sorter-ui
 conda env create -f environment.yml
+conda activate sorter
 pip install .
 ```
 
