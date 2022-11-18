@@ -109,6 +109,8 @@ if streamlit.session_state.sort:
 
             if streamlit.session_state.empty_tries >= config["empty_tries"]:
                 stop_sort()
+            else:
+                streamlit.experimental_rerun()
         else:
             streamlit.session_state.empty_tries = 0
             streamlit.sidebar.text(len(streamlit.session_state.tubes))
