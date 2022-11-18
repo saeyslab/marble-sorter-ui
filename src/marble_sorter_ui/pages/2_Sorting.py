@@ -41,9 +41,10 @@ if ("marbles" not in streamlit.session_state) and ("centers" not in streamlit.se
 if "tubes" not in streamlit.session_state:
     clear_tubes()
 
+config = get_config("sorter_config.yml")
+
 # Setup serial connection to sorter
 if "ser" not in streamlit.session_state:
-    config = get_config("sorter_config.yml")
     ser = get_connection(config["serial_port"])
 else:
     ser = streamlit.session_state.ser
@@ -80,8 +81,10 @@ if len(streamlit.session_state.tubes) > 0:
         pandas.CategoricalDtype(categories=["rood", "groen", "blauw"], ordered=True))
 
     if df.shape[0] > 0:
-        grid = seaborn.FacetGrid(data=df, row="Tube", aspect=2, sharex=False)
+        grid = seaborn.FacetGrid(data=df, row="Tube", aspect=1.7, sharex=False)
         grid.map_dataframe(seaborn.countplot, x="Color", palette=colors.values())
+        for ax in grid.axes.ravel():
+            ax.set_ylim(0, config["per_tube"])
         streamlit.pyplot(grid.fig)
 
         # seaborn.countplot(data=df, x="Tube", hue="Color", palette=colors.values())

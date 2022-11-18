@@ -1,1 +1,2 @@
 serial_port: "/dev/ttyUSB0"
+per_tube: 15
