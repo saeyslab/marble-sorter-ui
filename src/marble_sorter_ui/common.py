@@ -1,10 +1,15 @@
 import serial
+from serial import SerialException
+
 import yaml
 import time
 import pandas
 import numpy
+import streamlit
 from typing import List
 import matplotlib.colors
+
+from serial_stub import SerialStub
 
 colors = {
     "rood": "#EC5B60",
@@ -39,7 +44,14 @@ def get_config(path):
 
 
 def get_connection(serial_port):
-    return serial.Serial(serial_port, 9600)
+    try: ser = serial.Serial(serial_port, 9600)
+    except SerialException:
+        ser = SerialStub(serial_port)
+        print('No connection to real device, using SerialStub instead')
+    return ser
+
+# def get_connection(serial_port):
+#     return serial.Serial(serial_port, 9600)
 
 
 def load(ser):
@@ -103,3 +115,40 @@ def marbles_to_df(marbles: List) -> pandas.DataFrame:
         marbles_df = pandas.concat([marbles_df, df], axis=0, ignore_index=True)
 
     return marbles_df
+
+
+url_dict = {'rood' : 'app/static/red_macrophage.png',
+            'groen' : 'app/static/green_Bcell_v2.png',
+            'blauw' : 'app/static/blue_Tcell_v2.png'}
+
+def sample_to_plot(sample, order = "count"):
+
+    if order == "count":
+        sample = numpy.sort(sample) # Sort not working?
+        count = (list(range((sample == 'blauw').sum())) + 
+                  list(range((sample == 'groen').sum())) + 
+                  list(range((sample == 'rood').sum())))    
+    elif order == "time":
+        count = range(len(sample))
+
+    count = [x+1 for x in count]
+
+    print(sample)
+    print(count)
+    
+    urls = [url_dict[col] for col in sample]
+    chart_data = pandas.DataFrame({'color': sample,
+                                   'count': count,
+                                   'img': urls})
+    streamlit.vega_lite_chart(chart_data, 
+                              {'height' : 400,
+                               'width' : 500,
+                               'mark': {'type': 'image', 'width': 100, 'height': 100},
+                               'encoding': {
+                                  'x': {'field': 'count', 'type': 'quantitative',
+                                        'scale': {'domain': [1, 15]}},
+                                  'y': {'field': 'color', 'type': 'ordinal',
+                                        'scale': {'domain': ["rood", "groen", "blauw"]}},
+                                  'url': {'field': 'img', 'type': 'nominal'},
+                                },
+                              })

@@ -1,5 +1,5 @@
 import streamlit
-from marble_sorter_ui.common import *
+from common import *
 import numpy
 from scipy.spatial.distance import cosine
 import seaborn
@@ -25,6 +25,14 @@ def sort(rgb):
     dists = numpy.array([cosine(rgb, centers.values[i]) for i in range(4)])
     color = centers.iloc[dists.argmin()].name
     return bucket_map[color], color
+
+def position_red():
+    select_bucket(streamlit.session_state.ser, bucket=bucket_map["rood"])
+def position_green():
+    select_bucket(streamlit.session_state.ser, bucket=bucket_map["groen"])
+def position_blue():
+    select_bucket(streamlit.session_state.ser, bucket=bucket_map["blauw"])
+
 
 # Setup page
 streamlit.set_page_config(
@@ -63,36 +71,14 @@ with streamlit.sidebar:
     streamlit.button(label="Continue tube", on_click=continue_sort)
     streamlit.button(label="Stop sorting", on_click=stop_sort)
     streamlit.button(label="Clear tubes", on_click=clear_tubes)
-
-    # col1, col2 = streamlit.columns(2)
-    # with col1:
-    #     streamlit.button(label="Start new tube", on_click=start_sort)
-    #     streamlit.button(label="Continue tube", on_click=continue_sort)
-    # with col2:
-    #     streamlit.button(label="Stop sorting", on_click=stop_sort)
-    #     streamlit.button(label="Clear tubes", on_click=clear_tubes)
+    streamlit.button(label="Position Red", on_click=position_red)
+    streamlit.button(label="Position Green", on_click=position_green)
+    streamlit.button(label="Position Blue", on_click=position_blue)
 
 if len(streamlit.session_state.tubes) > 0:
-
-    dfs = []
     for i, tube in enumerate(streamlit.session_state.tubes):
-        df = pandas.DataFrame(tube, columns=["Color"])
-        df["Tube"] = i
-        dfs.append(df)
-    df = pandas.concat(dfs)
-    df["Color"] = df["Color"].astype(
-        pandas.CategoricalDtype(categories=["rood", "groen", "blauw"], ordered=True))
-
-    if df.shape[0] > 0:
-        grid = seaborn.FacetGrid(data=df, row="Tube", aspect=1.7, sharex=False)
-        grid.map_dataframe(seaborn.countplot, x="Color", palette=colors.values())
-        grid.set_xlabels("")
-        for ax in grid.axes.ravel():
-            ax.set_ylim(0, config["per_tube"])
-        streamlit.pyplot(grid.fig)
-
-        # seaborn.countplot(data=df, x="Tube", hue="Color", palette=colors.values())
-        # streamlit.pyplot(plt.gcf())
+        if(len(tube) > 0):
+            sample_to_plot(tube, order = "time")
 
 # Sort loop
 if streamlit.session_state.sort:
