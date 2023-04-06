@@ -34,6 +34,11 @@ def position_blue():
     select_bucket(streamlit.session_state.ser, bucket=bucket_map["blauw"])
 
 
+def order_count():
+    streamlit.session_state.order = "count"
+def order_time():
+    streamlit.session_state.order = "time"
+
 # Setup page
 streamlit.set_page_config(
     page_title="Sorting!",
@@ -63,22 +68,36 @@ else:
 if "sort" not in streamlit.session_state:
     streamlit.session_state.sort = False
 
+if "order" not in streamlit.session_state:
+    streamlit.session_state.order = "time"
+
+
 # Page layout
 streamlit.title("Tubes")
 
 with streamlit.sidebar:
-    streamlit.button(label="Start new tube", on_click=start_sort)
-    streamlit.button(label="Continue tube", on_click=continue_sort)
-    streamlit.button(label="Stop sorting", on_click=stop_sort)
-    streamlit.button(label="Clear tubes", on_click=clear_tubes)
-    streamlit.button(label="Position Red", on_click=position_red)
-    streamlit.button(label="Position Green", on_click=position_green)
-    streamlit.button(label="Position Blue", on_click=position_blue)
+    col1, col2 = streamlit.columns([1,1])
+    with col1:
+        streamlit.button(label="Start new tube", on_click=start_sort)
+        streamlit.button(label="Stop sorting", on_click=stop_sort)
+        streamlit.button(label="Order by count", on_click=order_count)
+    with col2:
+        streamlit.button(label="Continue tube", on_click=continue_sort)
+        streamlit.button(label="Clear tubes", on_click=clear_tubes)
+        streamlit.button(label="Order by time", on_click=order_time)
+
+    col1, col2, col3 = streamlit.columns([1,1,1])
+    with col1:
+        streamlit.button(label="Position Red", on_click=position_red)
+    with col2:
+        streamlit.button(label="Position Green", on_click=position_green)
+    with col3:
+        streamlit.button(label="Position Blue", on_click=position_blue)
 
 if len(streamlit.session_state.tubes) > 0:
     for i, tube in enumerate(streamlit.session_state.tubes):
         if(len(tube) > 0):
-            sample_to_plot(tube, order = "time")
+            sample_to_plot(tube, order = streamlit.session_state.order)
 
 # Sort loop
 if streamlit.session_state.sort:

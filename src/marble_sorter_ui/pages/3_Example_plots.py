@@ -5,6 +5,21 @@ streamlit.set_page_config(
     page_title="Example plots"
 )
 
+def order_count():
+    streamlit.session_state.order = "count"
+
+def order_time():
+    streamlit.session_state.order = "time"
+
+if "order" not in streamlit.session_state:
+    streamlit.session_state.order = "time"
+
+with streamlit.sidebar:
+      streamlit.button(label="Order by count", on_click=order_count)
+      streamlit.button(label="Order by time", on_click=order_time)
+      number = streamlit.number_input('Seed', value = 1)
+
+
 n_plots = 10
 n_cells = 15
 
@@ -15,10 +30,10 @@ probabilities = numpy.asarray([
     ])
 probabilities /= probabilities.sum(axis=1)[..., numpy.newaxis]
 
+rng = numpy.random.default_rng(number)
 for i, probability in enumerate(probabilities):
         for j in range(n_plots):
-            sample = numpy.random.choice(['rood', 'groen', 'blauw'], 
-                                         size = n_cells, 
-                                         p = probability)
-            print(type(sample))
-            sample_to_plot(sample)
+            sample = rng.choice(['rood', 'groen', 'blauw'], 
+                                size = n_cells, 
+                                p = probability)
+            sample_to_plot(sample, order = streamlit.session_state.order)

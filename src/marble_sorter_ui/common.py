@@ -130,13 +130,10 @@ def sample_to_plot(sample, order = "count"):
                   list(range((sample == 'rood').sum())))    
     elif order == "time":
         count = range(len(sample))
-
-    count = [x+1 for x in count]
-
-    print(sample)
-    print(count)
     
+    count = [x+1 for x in count]
     urls = [url_dict[col] for col in sample]
+    
     chart_data = pandas.DataFrame({'color': sample,
                                    'count': count,
                                    'img': urls})
