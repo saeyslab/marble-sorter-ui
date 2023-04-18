@@ -143,9 +143,11 @@ def sample_to_plot(sample, order = "count"):
                                'mark': {'type': 'image', 'width': 100, 'height': 100},
                                'encoding': {
                                   'x': {'field': 'count', 'type': 'quantitative',
-                                        'scale': {'domain': [1, 15]}},
+                                        'scale': {'domain': [1, 15]},
+                                        'title': order},
                                   'y': {'field': 'color', 'type': 'ordinal',
-                                        'scale': {'domain': ["rood", "groen", "blauw"]}},
+                                        'scale': {'domain': ["rood", "groen", "blauw"]},
+                                        'title': 'Cell type'},
                                   'url': {'field': 'img', 'type': 'nominal'},
                                 },
                               })
