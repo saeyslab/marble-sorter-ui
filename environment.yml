@@ -10,3 +10,4 @@ dependencies:
   - matplotlib=3.6.0
   - scipy=1.9.3
   - pyserial=3.5
+  - altair=4.0

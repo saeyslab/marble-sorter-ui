@@ -9,6 +9,13 @@ import matplotlib.pyplot as plt
 def continue_sort():
     streamlit.session_state.sort = True
 
+def set_centers():
+    sorter = streamlit.session_state["sorter"]
+    streamlit.session_state.centers = centers_dfs[sorter]
+    print("Setting sorter:")
+    print(sorter)
+    print(streamlit.session_state.centers)
+
 def start_sort():
     streamlit.session_state.tubes.append([])
     continue_sort()
@@ -50,7 +57,7 @@ if ("marbles" in streamlit.session_state) and ("centers" not in streamlit.sessio
     marbles_df = marbles_to_df(streamlit.session_state.marbles)
     streamlit.session_state.centers = marbles_df.groupby("color").mean()
 if ("marbles" not in streamlit.session_state) and ("centers" not in streamlit.session_state):
-    streamlit.session_state.centers = default_mean_RGB_df
+    streamlit.session_state.centers = centers_dfs["Sorter 1"]
 if "tubes" not in streamlit.session_state:
     clear_tubes()
 if "empty_tries" not in streamlit.session_state:
@@ -94,6 +101,8 @@ with streamlit.sidebar:
     with col3:
         streamlit.button(label="Position Blue", on_click=position_blue)
 
+    streamlit.selectbox(label="Sorter", options=["Sorter 1", "Sorter 2"], on_change=set_centers, key="sorter")
+
 if len(streamlit.session_state.tubes) > 0:
     for i, tube in enumerate(streamlit.session_state.tubes):
         if(len(tube) > 0):
@@ -115,13 +124,13 @@ if streamlit.session_state.sort:
             if streamlit.session_state.empty_tries >= config["empty_tries"]:
                 stop_sort()
             else:
-                streamlit.experimental_rerun()
+                streamlit.rerun()
         else:
             streamlit.session_state.empty_tries = 0
             streamlit.sidebar.text(len(streamlit.session_state.tubes))
             streamlit.session_state.tubes[-1].append(color)
             select_bucket(ser, bucket=bucket)
             eject(ser)
-            streamlit.experimental_rerun()
+            streamlit.rerun()
     else:
-        streamlit.experimental_rerun()
+        streamlit.rerun()
