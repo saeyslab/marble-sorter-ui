@@ -12,6 +12,31 @@ conda activate sorter
 pip install .
 ```
 
+### Linux-specific instructions
+
+#### dialout group
+Add your user to the `dialout` group:
+```
+sudo usermod -aG dialout [USER]
+```
+where you replace `[USER]` with your username.
+You need to log out and back in for the changes to take effect.
+If logging out and back in doesn't work, you might have to reboot.
+
+#### brltty
+On some distributions, specific library called `brltty` might interfere with the serial connection.
+This is a library for [refreshable braille displays](https://brltty.app/).
+Assuming you don't need this, uninstall it:
+```
+sudo apt remove brltty
+```
+
+#### Finding the correct device
+1. Run `dmesg -wH` to view kernel messages.
+2. Plug in the sorter.
+3. Check which device is used (should be something like `ttyUSB0`)
+4. Fill in this device in `sorter_config.yml`
+
 ## Usage
 
 Connect the sorter and fill in the serial port in [sorter_config.yml](sort_config.yml)

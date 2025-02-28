@@ -27,7 +27,9 @@ bucket_map = {
     "leeg": -1
 }
 
-default_mean_RGB_df = pandas.DataFrame(
+
+# Sorter 1 is de sorter MET bloempje op de chip
+centers_df_sorter1 = pandas.DataFrame(
     [
         {'R': 118.2, 'G': 67., 'B': 59.},
         {'R': 87.6, 'G': 85, 'B': 66.},
@@ -37,6 +39,25 @@ default_mean_RGB_df = pandas.DataFrame(
     index=['rood', 'groen', 'blauw', 'leeg']
 )
 
+# Sorter 2 is de sorter ZONDER bloempje op de chip
+centers_df_sorter2 = pandas.DataFrame(
+    [
+        {'R': 104.1, 'G': 71.3, 'B': 68.7},
+        {'R': 68.1, 'G': 96.7, 'B': 75.1},
+        {'R': 54.9, 'G': 87.4, 'B': 99.6},
+        {'R': 67.8, 'G': 86.0, 'B': 85.0},
+    ],
+    index=['rood', 'groen', 'blauw', 'leeg']
+)
+
+centers_dfs = {
+    "Sorter 1": centers_df_sorter1,
+    "Sorter 2": centers_df_sorter2
+}
+
+# TODO add this to UI instead of hardcoding
+centers_df = centers_df_sorter1
+
 
 def get_config(path):
     with open(path, "r") as fh:
@@ -45,8 +66,9 @@ def get_config(path):
 
 def get_connection(serial_port):
     try: ser = serial.Serial(serial_port, 9600)
-    except SerialException:
+    except SerialException as ex:
         ser = SerialStub(serial_port)
+        print(ex)
         print('No connection to real device, using SerialStub instead')
     return ser
 

@@ -1,3 +1,5 @@
-serial_port: "COM5"
+# Op Windows: COMx (bvb COM5)
+# Op Linux: /dev/ttyUSBx (bvb /dev/ttyUSB0)
+serial_port: "/dev/ttyUSB0"
 per_tube: 15
 empty_tries: 3
