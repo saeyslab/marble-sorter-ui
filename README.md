@@ -17,12 +17,14 @@ pip install .
 #### dialout group
 Add your user to the `dialout` group:
 ```
-sudo adduser [USER] dialout
+sudo usermod -aG dialout [USER]
 ```
 where you replace `[USER]` with your username.
+You need to log out and back in for the changes to take effect.
+If logging out and back in doesn't work, you might have to reboot.
 
 #### brltty
-If you are on Ubuntu, a specific library called `brltty` might interfere with the serial connection.
+On some distributions, specific library called `brltty` might interfere with the serial connection.
 This is a library for [refreshable braille displays](https://brltty.app/).
 Assuming you don't need this, uninstall it:
 ```
