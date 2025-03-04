@@ -25,10 +25,11 @@ n_cells = 15
 
 names = ["B-cell-ALL", "T-cell-ALL", "AML"]
 celltypes = ['rood', 'groen', 'blauw']
+abundance = 1.5
 probabilities_diseased = numpy.asarray([
-        [1, 2, 1],  # Too many B cells: B-cell-ALL
-        [1, 1, 2],  # Too many T cells: T-cell-ALL
-        [2, 1, 1],  # Not enough white blood cells in general: AML
+        [1, abundance, 1],  # Too many B cells: B-cell-ALL
+        [1, 1, abundance],  # Too many T cells: T-cell-ALL
+        [abundance, 1, 1],  # Not enough white blood cells in general: AML
     ], dtype=float)
 probabilities_diseased /= probabilities_diseased.sum(axis=1)[..., numpy.newaxis]
 rng = numpy.random.default_rng(number)
