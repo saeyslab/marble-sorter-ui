@@ -23,17 +23,37 @@ with streamlit.sidebar:
 n_plots = 10
 n_cells = 15
 
-names = ["healthy", "diseased"]
-probabilities = numpy.asarray([
-        [1, 1, 1],
-        [1, .1, .1]
-    ])
-probabilities /= probabilities.sum(axis=1)[..., numpy.newaxis]
-
+names = ["B-cell-ALL", "T-cell-ALL", "AML"]
+celltypes = ['rood', 'groen', 'blauw']
+abundance = 1.5
+probabilities_diseased = numpy.asarray([
+        [1, abundance, 1],  # Too many B cells: B-cell-ALL
+        [1, 1, abundance],  # Too many T cells: T-cell-ALL
+        [abundance, 1, 1],  # Not enough white blood cells in general: AML
+    ], dtype=float)
+probabilities_diseased /= probabilities_diseased.sum(axis=1)[..., numpy.newaxis]
 rng = numpy.random.default_rng(number)
-for i, probability in enumerate(probabilities):
+
+# Healthy plots contain EXACTLY 5 cells of each type
+streamlit.subheader("Healthy")
+for i in range(n_plots):
+    sample = numpy.array(celltypes * 5)
+    rng.shuffle(sample)
+    sample_to_plot(sample, order = streamlit.session_state.order)
+
+for i, probability in enumerate(probabilities_diseased):
+        streamlit.subheader(names[i])
         for j in range(n_plots):
-            sample = rng.choice(['rood', 'groen', 'blauw'], 
-                                size = n_cells, 
-                                p = probability)
+            # Make sure that the cell abundant cell type indeed has strictly more occurrences
+            # than all other cell types
+            sample_ok = False
+            while not sample_ok:
+                sample = rng.choice(celltypes, 
+                                    size = n_cells, 
+                                    p = probability)
+                abundant_type = celltypes[numpy.argmax(probability)]
+                counts = dict(zip(*numpy.unique(sample, return_counts=True)))
+                other_types = [t for t in celltypes if t is not abundant_type and t in counts.keys()]
+                sample_ok = all([counts[abundant_type] > counts[other_type] for other_type in other_types])
+
             sample_to_plot(sample, order = streamlit.session_state.order)
