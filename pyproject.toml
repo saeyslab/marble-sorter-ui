@@ -1,9 +1,19 @@
-[build-system]
-# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
-requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "marble-sorter-ui"
+requires-python = "==3.10.6"
+version = "0.0.1"
+dependencies = [
+  "seaborn==0.12.1",
+  "streamlit==1.32.0",
+  "numpy==1.23.4",
+  "matplotlib==3.6.0",
+  "scipy==1.9.3",
+  "pyserial==3.5",
+  "altair==4.0",
+  "plotly==5.19.*",
+  "jupyterlab==3.5.*",
+]
 
-[tool.setuptools_scm]
-# For smarter version schemes and other configuration options,
-# check out https://github.com/pypa/setuptools_scm
-version_scheme = "no-guess-dev"
+[build-system]
+requires = ["uv_build>=0.11.6,<0.12"]
+build-backend = "uv_build"

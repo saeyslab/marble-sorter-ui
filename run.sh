@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-streamlit run src/marble_sorter_ui/Welcome.py
+uv run streamlit run src/marble_sorter_ui/Welcome.py
